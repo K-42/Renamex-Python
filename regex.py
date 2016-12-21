@@ -5,22 +5,64 @@ files = ['Dexter- S01E10.1080p.5.1Ch.BluRay.ReEnc-DeeJayAhmed.mp4','Breaking Bad
 #regex
 pull= re.compile(r'''
 	([a-z-_\.\s]*) 						#series name
-	(s(\d{,2})e(\d{,2})|(\d{3,4})|(\d{1,2})x(\d{1,2}))	#episode number (S01E01, 1x1, 101)
+	(s(\d{,2})e(\d{,2})|(\d{3,4})|(\d{1,2})x(\d{1,2}))      #episode number (S01E01, 1x1, 101)
 	(.*) 							#episode title (junk)
 	(\.\w*$) 						#file extension
         ''',re.VERBOSE|re.I)
 
+caps = "y"
+opt = 1
+eTitle = "Temporary"
+
+def opt1(): #S01E01
+	filename = ((sName) 
+	+ " - " 
+	+ ("S" if caps == "y" else "s") 
+	+ (str(sSeason) if int(sSeason) >=10 else "0"+str(sSeason)) 
+	+ ("E" if caps == "y" else "e") 
+	+ (str(sEpisode) if int(sEpisode) >=10 else "0"+str(sEpisode)) 
+	+ " - " 
+	+ eTitle)
+	return filename
+  
+def opt2(): #S1E1
+	filename = ((sName)
+	+ " - "
+	+ ("S" if caps == "y" else "s")
+	+ str(sSeason)
+	+ ("E" if caps == "y" else "e")
+	+ str(sEpisode)
+	+ " - "
+	+ eTitle)
+	return filename
+  
+def opt3(): #1x1
+	filename = ((sName)
+	+ " - " 
+	+ str(sSeason)
+	+ ("X" if caps == "y" else "x") 
+	+ str(sEpisode) 
+	+ " - " 
+	+ eTitle)
+	return filename
+  	
+def opt4(): #101
+	filename = ((sName) 
+	+ " - " 
+	+ str(sSeason) 
+	+ (str(sEpisode) if int(sEpisode) >=10 else "0"+str(sEpisode))
+	+ " - "
+	+ eTitle)
+	return filename
+
 #main processing loop
 j=0
 for i in files:
-        oldName = pull.search(files[j])
-        sName = re.sub(r'[\W_]',' ', oldName.group(1)).title().strip(' ') #removes junk and trailing white space from series name
-        sSeason = oldName.group(2).strip('s,S')[:2].lstrip('0').strip('x,X,e,E')
-        sEpisode= oldName.group(2)[-2:].lstrip('0').strip('x,X,e,E')
-        #filenames
-        #print((sSeason) +','+(sEpisode))
-        #print((sName) +	" - S" + (sSeason if int(sSeason) >=10 else "0"+str(sSeason)) + "E" + (sEpisode if int(sEpisode) >=10 else "0"+str(sEpisode))) #if 0s +title
-        #print((sName) + " - S" + (sSeason) + "E" + (sEpisode)) #if not 0s +title
-        #print((sName) + " - " + (sSeason) + "x" + (sEpisode)) #if 1x1 +title
-        #print((sName) + " - " + (sSeason) + (sEpisode if int(sEpisode) >=10 else "0"+str(sEpisode))) #if 101 +title
-        j+=1
+	oldName = pull.search(files[j])
+	sName = re.sub(r'[\W_]',' ', oldName.group(1)).title().strip(' ') #removes junk and trailing white space from series name
+	sSeason = oldName.group(2).strip('s,S')[:2].lstrip('0').strip('x,X,e,E')
+	sEpisode= oldName.group(2)[-2:].lstrip('0').strip('x,X,e,E')
+	if opt == 1:
+                file = opt1()
+		print (file)
+		j+=1
